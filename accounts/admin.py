@@ -4,14 +4,14 @@ from django.contrib import admin
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 
-from .models import CustomUser
+from .models import CustomUser, UserPermissions
 
 
 class CustomUserAdmin(UserAdmin):
     list_display = (
-        'username', 'email', 'first_name', 'last_name', 'is_staff'
+        'username', 'email', 'first_name', 'last_name', 'is_staff', "permission"
         # 'is_teacher', 'is_student', 'mailing_address'
-        )
+    )
     fieldsets = (
         (None, {
             'fields': ('username', 'password')
@@ -19,40 +19,41 @@ class CustomUserAdmin(UserAdmin):
         ('Personal info', {
             'fields': ('first_name', 'last_name', 'email')
         }),
-        ('Permissions', {
-            'fields': (
-                'is_active', 'is_staff', 'is_superuser',
-                'groups', 'user_permissions'
-                )
+        ('Custom Permission status', {
+            'fields': ('permission',)
         }),
+        # ('Permissions', {
+        #     'fields': (
+        #         'is_active', 'is_staff', 'is_superuser',
+        #         'groups', 'user_permissions'
+        #         )
+        # }),
         ('Important dates', {
             'fields': ('last_login', 'date_joined')
         }),
-        # ('Additional info', {
-        #     'fields': ('is_student', 'is_teacher', 'mailing_address')
-        # })
     )
     add_fieldsets = (
         (None, {
             'fields': ('username', 'password1', 'password2')
         }),
+        ('Custom Permission status', {
+            'fields': ('permission')
+        }),
         ('Personal info', {
             'fields': ('first_name', 'last_name', 'email')
         }),
-        ('Permissions', {
-            'fields': (
-                'is_active', 'is_staff', 'is_superuser',
-                'groups', 'user_permissions'
-                )
-        }),
+        # ('Permissions', {
+        #     'fields': (
+        #         'is_active', 'is_staff', 'is_superuser',
+        #         'groups', 'user_permissions'
+        #         )
+        # }),
         ('Important dates', {
             'fields': ('last_login', 'date_joined')
         }),
-        # ('Additional info', {
-        #     'fields': ('is_student', 'is_teacher', 'mailing_address')
-        # })
+
     )
 
 
-
 admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(UserPermissions)
