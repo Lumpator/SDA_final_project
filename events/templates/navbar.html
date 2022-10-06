@@ -2,16 +2,22 @@
 
 <nav class="navbar bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" href="{% url "home" %}">
             <img src="{% static 'logos/fake_events_logo.png' %}" class="img-fluid" width="125px"> </a>
         <div class="navbar-nav col px-2">
             <form class="mx-2 col" role="search">
                 <input class="form-control form-control-lg" type="search" placeholder="&#128269; Find event" aria-label="Search">
             </form>
         </div>
-        <a class="btn btn-primary btn-lg col-3 col" href="#">
+        {% if request.user.is_authenticated %}
+                <a class="btn btn-primary btn-lg col-3 col" href="{% url "logout" %}">
+            <i class="bi bi-person-circle"></i>
+            Logout</a>
+        {% else %}
+        <a class="btn btn-primary btn-lg col-3 col" href="{% url "login" %}">
             <i class="bi bi-person-circle"></i>
             Login</a>
+        {% endif %}
     </div>
 </nav>
 

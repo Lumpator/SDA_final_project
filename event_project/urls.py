@@ -26,6 +26,7 @@ api.add_router("/events", router)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("api/", api.urls),
+    path("accounts/", include("accounts.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
     path("", include("events.urls")),
 
