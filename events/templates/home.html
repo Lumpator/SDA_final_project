@@ -1,4 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
-Hello World!
+    {% include "menu_filter.html" %}
+
+    {% block listing %}
+        {% endblock %}
+
 {% endblock %}
