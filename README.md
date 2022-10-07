@@ -1,4 +1,4 @@
-# SDA Python course final project
+# SDA Python course final individual project
 
 ## Brief description of the system
 The goal is to create a website that allows organizers to enter events and collect entries for them. Any registered user can sign up. The website should also have events search engine (with several criteria) and an API, that will allow the presentation on other pages / services
