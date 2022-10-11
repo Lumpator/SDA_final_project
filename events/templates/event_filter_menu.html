@@ -1,0 +1,114 @@
+<div class="container-fluid">
+    {# Filter offcanvas menu #}
+
+    {# offcanvas toggle button #}
+    <button class="btn-outline-primary btn  my-3  d-lg-none border-0" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#offcanvasResponsive" aria-controls="offcanvasResponsive">
+        <i class="bi bi-list h1"></i>
+    </button>
+
+    {# mobile only buttons #}
+    <button class="btn btn-outline-primary d-lg-none">Today</button>
+    <button class="btn btn-outline-primary d-lg-none">This week</button>
+    <button class="btn btn-outline-primary d-lg-none">This month</button>
+
+
+    {# offcanvas menu #}
+    <div class="offcanvas-lg offcanvas-start" tabindex="-1" id="offcanvasResponsive"
+         aria-labelledby="offcanvasResponsiveLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasResponsiveLabel">Filter events</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#offcanvasResponsive"
+                    aria-label="Close"></button>
+        </div>
+        <div class="d-flex justify-content-center">
+            <div class="offcanvas-body col-sm-12 col-md-10 my-2">
+
+                {# Filter form start #}
+                <form action="" method="post" class="form-control border-0 mb-2">
+                    {% csrf_token %}
+                    <div class="row d-flex justify-content-center">
+                        <label class="col-1 col-form-label-lg text-end" for="datestart">From</label>
+                        <div class="col-lg-4 col-sm-12">
+
+                            {# datestart filter #}
+                            <input class="form-control form-control-lg" type="date" name="datestart"
+                                   value=
+                                           {% if filters.0 %}
+                                               "{{ filters.0 }}"
+                                           {% else %}
+                                               "{{ default.0|date:"Y-m-d" }}"
+                                           {% endif %}
+                            >
+                        </div>
+                        <label class="col-form-label-lg col-1 text-end" for="dateend">To</label>
+                        <div class="col-lg-4 col-sm-12">
+
+                            {# dateend filter #}
+                            <input class="form-control form-control-lg" type="date" name="dateend"
+                                   value=
+                                           {% if filters.1 %}
+                                               "{{ filters.1 }}"
+                                           {% else %}
+                                               "{{ default.1|date:"Y-m-d" }}"
+                                           {% endif %}
+                            >
+
+                        </div>
+                    </div>
+
+
+                    <div class="row d-flex justify-content-center">
+                        <div class="col-1 my-2"></div>
+                        <div class="col-lg-4 col-sm-12 my-2">
+
+                            {# City select filter #}
+                            <select class="form-select form-select-lg" name="locations" multiple="multiple">
+                                {% if "All locations" in filters.2 %}
+                                    <option selected="All locations">All locations</option>
+                                {% else %}
+                                    <option value="All locations">All locations</option>
+                                {% endif %}
+
+                                {% for city in cities %}
+                                    {% if city in filters.2 %}
+                                        <option selected="{{ city }}">{{ city }}</option>
+                                    {% else %}
+                                        <option value="{{ city }}">{{ city }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        {# Filter favourites/joined buttons #}
+                        <div class="col-1 my-2"></div>
+                        <div class="col-lg-4 my-2">
+                            <div class="form-control border-0">
+
+                                <input type="checkbox" class="btn-check" id="btn-check-favourites" autocomplete="off"
+                                       name="favourites_checkbox" value="true"
+                                        {% if filters.3 %} checked {% endif %}>
+                                <label class="btn btn-outline-primary" for="btn-check-favourites"><i
+                                        class="bi bi-heart-fill"></i> Favourites</label>
+
+                                <input type="checkbox" class="btn-check" id="btn-check-joined" autocomplete="off"
+                                       name="joined_checkbox" value="true"
+                                        {% if filters.4 %} checked {% endif %}>
+                                <label class="btn btn-outline-primary" for="btn-check-joined"><i
+                                        class=" bi bi-people-fill"></i> Joined</label>
+
+                            </div>
+
+                            {# Filter submit button #}
+                            <input type="submit"
+                                   class="form-control form-control-lg btn btn-primary btn-lg my-2"
+                                   value="Apply filter">
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

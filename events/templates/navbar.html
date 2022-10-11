@@ -2,20 +2,25 @@
 
 <nav class="navbar bg-light">
     <div class="container-fluid">
+
+        {# App logo #}
         <a class="navbar-brand" href="{% url "home" %}">
-            <img src="{% static 'logos/fake_events_wide.png' %}" class="img-fluid" width="150px" alt="fake-events-logo"> </a>
-        <div class="d-flex justify-content-center">
-            <form class="nav-item" role="search">
-                <input class="form-control form-control-lg" type="search" placeholder="&#128269; Find event"
-                       aria-label="Search">
-            </form>
-        </div>
+            <img src="{% static 'logos/fake_events_logo.png' %}" class="img-fluid" width="100px" alt="fake-events-logo">
+        </a>
+
+        {# Search form #}
+        <form class="nav-item col" role="search">
+            <input class="form-control" type="search" placeholder="&#128269; Find event"
+                   aria-label="Search">
+        </form>
+
+        {# Login button / login user menu #}
         {% if request.user.is_authenticated %}
-            <a class="btn btn-primary btn-lg mx-3" href="{% url "logout" %}">
+            <a class="btn btn-primary mx-3" href="{% url "logout" %}">
                 <i class="bi bi-person-circle"></i>
                 Logout</a>
         {% else %}
-            <a class="btn btn-primary btn-lg mx-3" href="{% url "login" %}">
+            <a class="btn btn-primary mx-3" href="{% url "login" %}">
                 <i class="bi bi-person-circle"></i>
                 Login</a>
         {% endif %}

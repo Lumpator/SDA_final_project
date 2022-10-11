@@ -1,0 +1,204 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container-fluid my-3">
+
+
+        {#        <div class="container-fluid">#}
+        {#            <a href="{{ request.META.HTTP_REFERER }}" class="btn  btn-outline-primary"><i#}
+        {#                    class="bi bi-arrow-left-circle"></i>#}
+        {#                <span class="d-none d-sm-inline">all events</span>#}
+        {#            </a>#}
+        {##}
+        {#        </div>#}
+
+        <div class="row">
+            <div class="col-lg-5">
+                <div class="card">
+                    <img src="{{ event.photo }}" class="card-img opacity-25" alt="...">
+                    <div class="card-img-overlay">
+                        <h3 class="card-title my-2">{{ event.title }}</h3>
+                        <p class="card-text">{{ event.description }}</p>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col text-start">City</div>
+                                <div class="col text-end h5">{{ event.city }}</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col text-start">Duration</div>
+                                <div class="col text-end h5">{{ event.event_start|date:'d.m.Y H:i' }}
+                                    - {{ event.event_end|date:'d.m.Y H:i' }}</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item">
+                            <div class="row">
+                                <div class="col text-start">Organizer</div>
+                                <div class="col text-end h5">{{ event.host }}</div>
+                            </div>
+                        </li>
+
+                    </ul>
+                </div>
+
+
+                <div class="container my-3">
+
+                {% if request.user in event.participants.all %}
+                    <button name="leave" class="btn btn-danger" id="join_event">Leave Event</button>
+                {% else %}
+                    <button name="join" class="btn btn-primary" id="join_event">Join Event</button>
+                {% endif %}
+
+                    {% if request.user in event.favourites.all %}
+                        <button name="remove" id="add_to_favourites"
+                                class="btn rounded-circle btn-outline-primary btn-lg border-0 mx-3">
+                            <i class='bi bi-heart-fill'></i>
+                        </button>
+                    {% else %}
+                        <button name="add" id="add_to_favourites"
+                                class="btn btn btn-lg btn-outline-primary border-0 mx-3">
+                            <i class="bi bi-heart"></i>
+                        </button>
+                    {% endif %}
+                    <div id="alert_placeholder"></div>
+                </div>
+            </div>
+
+            <div class="col-lg-7">
+                <div class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Discussion</h3>
+                        <div class="container-fluid">
+
+                            <form action="" method="POST">
+                                {% csrf_token %}
+                                <input class="form-control" name="body" id="body" type="text"
+                                       placeholder="Write your message here....">
+                                <input class="btn btn-primary my-2" type="submit" value="Send">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        let csrftoken = getCookie('csrftoken');
+
+        async function addToFav() {
+            const response = await fetch("/event/{{event.id}}/addfav", {
+                method: "POST",
+                body: {"id": {{event.id}}},
+                headers: {"X-CSRFToken": csrftoken},
+                credentials: 'same-origin',
+            })
+            const responseText = await response.text()
+            console.log(responseText)
+            fav_button.innerHTML = "<i class='bi bi-heart-fill'></i>";
+            const alert = document.getElementById("alert_placeholder");
+            const wrapper = document.createElement("div")
+            wrapper.classList = ("alert alert-success alert-dismissible fade show");
+            wrapper.innerHTML = "<strong>added to favourites</strong><button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>"
+            alert.append(wrapper)
+        }
+
+        async function removeFav() {
+            const response = await fetch("/event/{{event.id}}/rmfav", {
+                method: "POST",
+                body: {"id": {{event.id}}},
+                headers: {"X-CSRFToken": csrftoken},
+                credentials: 'same-origin',
+            })
+            const responseText = await response.text()
+            console.log(responseText)
+            fav_button.innerHTML = "<i class='bi bi-heart'>";
+            const alert = document.getElementById("alert_placeholder")
+            const wrapper = document.createElement("div")
+            wrapper.classList = ("alert alert-danger alert-dismissible fade show");
+            wrapper.innerHTML = "<strong>Removed from favourites</strong><button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>"
+            alert.append(wrapper)
+
+        }
+
+
+        fav_button = document.getElementById("add_to_favourites")
+        fav_button.addEventListener("click", function () {
+            if (fav_button.getAttribute("name") == ("add")) {
+                addToFav();
+                fav_button.setAttribute("name", "remove")
+            } else {
+                removeFav();
+                fav_button.setAttribute("name", "add")
+            }
+
+        });
+
+        join_button = document.getElementById("join_event")
+        join_button.addEventListener("click", function () {
+            if (join_button.getAttribute("name") == ("join")) {
+                joinEvent();
+                join_button.setAttribute("name", "leave")
+            } else {
+                leaveEvent();
+                join_button.setAttribute("name", "join")
+            }
+
+        });
+
+            async function joinEvent() {
+            const response = await fetch("/event/{{event.id}}/join", {
+                method: "POST",
+                body: {"id": {{event.id}}},
+                headers: {"X-CSRFToken": csrftoken},
+                credentials: 'same-origin',
+            })
+            const responseText = await response.text()
+            console.log(responseText)
+            {#fav_button.innerHTML = "<i class='bi bi-heart-fill'></i>";#}
+            const alert = document.getElementById("alert_placeholder");
+            const wrapper = document.createElement("div")
+            wrapper.classList = ("alert alert-success alert-dismissible fade show");
+            wrapper.innerHTML = "<strong>Joined Event</strong><button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>"
+            alert.append(wrapper)
+        }
+
+            async function leaveEvent() {
+            const response = await fetch("/event/{{event.id}}/leave", {
+                method: "POST",
+                body: {"id": {{event.id}}},
+                headers: {"X-CSRFToken": csrftoken},
+                credentials: 'same-origin',
+            })
+            const responseText = await response.text()
+            console.log(responseText)
+            {#fav_button.innerHTML = "<i class='bi bi-heart'>";#}
+            const alert = document.getElementById("alert_placeholder")
+            const wrapper = document.createElement("div")
+            wrapper.classList = ("alert alert-danger alert-dismissible fade show");
+            wrapper.innerHTML = "<strong>You left the event!</strong><button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>"
+            alert.append(wrapper)
+
+        }
+
+
+    </script>
+{% endblock %}

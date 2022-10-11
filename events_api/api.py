@@ -11,6 +11,11 @@ from events_api.schemas import EventOut, EventIn
 router = Router()
 
 
+@router.get("/{int:event_id}", response=EventOut)
+def one_event(request, event_id):
+    return get_object_or_404(Event, pk=event_id)
+
+
 @router.get("/all", response=list[EventOut])
 def all_events(request):
     return get_list_or_404(Event)
@@ -24,9 +29,5 @@ def create_event(request, event: EventIn = Form(...)):
     new_event.save()
     return JsonResponse({"id": new_event.id}, status=201)
 
-
 # , file: UploadedFile = None
 
-@router.get("/{event_pk}", response=EventOut)
-def one_event(request, event_id):
-    return get_object_or_404(Event, pk=event_id)

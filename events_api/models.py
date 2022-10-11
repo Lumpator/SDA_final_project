@@ -15,6 +15,7 @@ class Event(models.Model):
     city = models.CharField(max_length=120)
     approved = models.BooleanField(default=False)
     participants = models.ManyToManyField(CustomUser, related_name="eventparticipants", blank=True)
+    favourites = models.ManyToManyField(CustomUser, related_name="eventfavourites", blank=True)
     host = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name="eventhost")
 
     def __str__(self):
