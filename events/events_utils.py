@@ -37,6 +37,8 @@ def execute_filtered_query(request, filters: List, default: List):
         events = events.filter(city__in=filters[2])
     if request.session.get("favourites_checkbox"):
         events = events.filter(favourites__username__exact=request.user.username)
+    if request.session.get("joined_checkbox"):
+        events = events.filter(participants__username__exact=request.user.username)
     return events
 
 

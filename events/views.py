@@ -1,27 +1,31 @@
+import json
 from datetime import datetime, timedelta
-from time import strptime
+
 
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from accounts.models import CustomUser
-from events.events_utils import check_and_save_session_filters, add_day_for_filter, get_all_cities_from_events, \
+from events.events_utils import check_and_save_session_filters, get_all_cities_from_events, \
     execute_filtered_query, get_filters_from_session
+from events.forms.forms import EventCreateForm
 from events_api.models import Event
 
 
 # Create your views here.
 
-def home(request):
+def home(request, *args, **kwargs):
     # session handling - create new for annonymous user
     if not request.session or not request.session.session_key:
         request.session.save()
     if request.method == "POST":
+        print(request.POST.get("datestart"))
         check_and_save_session_filters(
             request)  # save filtered settings (if any) into session. Also rewrite old ones if new filter was set.
     filters = get_filters_from_session(request)
+
     default = [datetime.today(), datetime.today() + timedelta(weeks=4)]  # for template purposes
 
     events = execute_filtered_query(request, filters, default)
@@ -29,7 +33,6 @@ def home(request):
     paginator = Paginator(events, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
     return render(request, "home.html",
                   {"page_obj": page_obj, "filters": filters, "default": default,
                    "cities": get_all_cities_from_events()})
@@ -76,3 +79,15 @@ def leave_event(request, id):
         event.save()
         return HttpResponse("OK")
 
+@login_required
+def create_event(request):
+    if request.method == "POST":
+        pass
+        # event = Event.objects.create(
+        #     host=request.user,
+        #     name=request.POST.get("name"),
+        #     description=request.POST.get("descr")
+        #     )
+        # return redirect("event", pk=event.id)
+
+    return render(request, "create_event.html", {"form": EventCreateForm})

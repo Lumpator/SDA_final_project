@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="container-fluid col-lg-8">
+    <form method="POST" action="">
+            {% csrf_token %}
+        <input type="">
+
+
+        {{ form.as_p }}
+       <input type="date" name="{{ form.event_start }}">
+    <input type="submit" class="btn btn-primary col-4" value="Create">
+
+
+    </form>
+</div>
+{% endblock %}

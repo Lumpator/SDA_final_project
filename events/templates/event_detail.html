@@ -46,11 +46,11 @@
 
                 <div class="container my-3">
 
-                {% if request.user in event.participants.all %}
-                    <button name="leave" class="btn btn-danger" id="join_event">Leave Event</button>
-                {% else %}
-                    <button name="join" class="btn btn-primary" id="join_event">Join Event</button>
-                {% endif %}
+                    {% if request.user in event.participants.all %}
+                        <button name="leave" class="btn btn-danger" id="join_event">Leave Event</button>
+                    {% else %}
+                        <button name="join" class="btn btn-primary" id="join_event">Join Event</button>
+                    {% endif %}
 
                     {% if request.user in event.favourites.all %}
                         <button name="remove" id="add_to_favourites"
@@ -152,19 +152,19 @@
 
         });
 
-        join_button = document.getElementById("join_event")
-        join_button.addEventListener("click", function () {
-            if (join_button.getAttribute("name") == ("join")) {
+        joinButton = document.getElementById("join_event")
+        joinButton.addEventListener("click", function () {
+            if (joinButton.getAttribute("name") == ("join")) {
                 joinEvent();
-                join_button.setAttribute("name", "leave")
+                joinButton.setAttribute("name", "leave")
             } else {
                 leaveEvent();
-                join_button.setAttribute("name", "join")
+                joinButton.setAttribute("name", "join")
             }
 
         });
 
-            async function joinEvent() {
+        async function joinEvent() {
             const response = await fetch("/event/{{event.id}}/join", {
                 method: "POST",
                 body: {"id": {{event.id}}},
@@ -173,7 +173,8 @@
             })
             const responseText = await response.text()
             console.log(responseText)
-            {#fav_button.innerHTML = "<i class='bi bi-heart-fill'></i>";#}
+            joinButton.classList = ("btn btn-danger")
+            joinButton.innerHTML = "Leave Event";
             const alert = document.getElementById("alert_placeholder");
             const wrapper = document.createElement("div")
             wrapper.classList = ("alert alert-success alert-dismissible fade show");
@@ -181,7 +182,7 @@
             alert.append(wrapper)
         }
 
-            async function leaveEvent() {
+        async function leaveEvent() {
             const response = await fetch("/event/{{event.id}}/leave", {
                 method: "POST",
                 body: {"id": {{event.id}}},
@@ -190,11 +191,12 @@
             })
             const responseText = await response.text()
             console.log(responseText)
-            {#fav_button.innerHTML = "<i class='bi bi-heart'>";#}
+            joinButton.classList = ("btn btn-primary")
+            joinButton.innerHTML = "Join Event";
             const alert = document.getElementById("alert_placeholder")
             const wrapper = document.createElement("div")
             wrapper.classList = ("alert alert-danger alert-dismissible fade show");
-            wrapper.innerHTML = "<strong>You left the event!</strong><button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>"
+            wrapper.innerHTML = "<strong>&#128546; Bye</strong><button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>"
             alert.append(wrapper)
 
         }

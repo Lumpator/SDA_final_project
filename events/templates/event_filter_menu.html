@@ -1,3 +1,4 @@
+{% load template_time_functions %}
 <div class="container-fluid">
     {# Filter offcanvas menu #}
 
@@ -7,11 +8,27 @@
         <i class="bi bi-list h1"></i>
     </button>
 
-    {# mobile only buttons #}
-    <button class="btn btn-outline-primary d-lg-none">Today</button>
-    <button class="btn btn-outline-primary d-lg-none">This week</button>
-    <button class="btn btn-outline-primary d-lg-none">This month</button>
+    {# mobile only buttons - Today, This week, This month#}
+<form action="" class="d-inline-block d-lg-none" method="post">
+    {% csrf_token %}
+  <input type="hidden" value={% now "Y-m-d" %} name="datestart" />
+  <input type="hidden" value={% now "Y-m-d" %} name="dateend" />
+  <button type="submit" class="btn btn-outline-primary" name="filter_today" id="filter_today">Today</button>
+</form>
 
+<form action="" class="d-inline-block d-lg-none" method="post">
+    {% csrf_token %}
+  <input type="hidden" value={% now "Y-m-d" %} name="datestart" />
+  <input type="hidden" value={{ 7|add_days|date:"Y-m-d" }} name="dateend" />
+    <button class="btn btn-outline-primary" id="filter_this_week">Next 7 days</button>
+</form>
+
+<form action="" class="d-inline-block d-lg-none" method="post">
+    {% csrf_token %}
+  <input type="hidden" value={% now "Y-m-d" %} name="datestart" />
+  <input type="hidden" value={{ 30|add_days|date:"Y-m-d" }} name="dateend" />
+    <button class="btn btn-outline-primary" id="filter_this_month">Next 30 days</button>
+</form>
 
     {# offcanvas menu #}
     <div class="offcanvas-lg offcanvas-start" tabindex="-1" id="offcanvasResponsive"
