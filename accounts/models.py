@@ -13,5 +13,5 @@ class UserPermissions(models.Model):
 
 
 class CustomUser(AbstractUser):
-    permission = models.ForeignKey(UserPermissions, on_delete=models.SET_NULL, null=True, default=1)
+    permission = models.ForeignKey(UserPermissions, on_delete=models.SET_NULL, null=True)
 

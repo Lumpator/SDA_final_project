@@ -128,8 +128,8 @@ STATICFILES_DIRS = (
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
-MEDIA_URL = "events_api/media/event_photos/"
-MEDIA_ROOT = os.path.join(BASE_DIR, "events_api/media/event_photos/")
+# MEDIA_URL = "events_api/media/event_photos/"
+# MEDIA_ROOT = os.path.join(BASE_DIR, "events_api/media/event_photos/")
 
 
 # Default primary key field type

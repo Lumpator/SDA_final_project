@@ -22,10 +22,10 @@ def all_events(request):
 
 
 @router.post("/create")
-def create_event(request, event: EventIn = Form(...)):
+def create_event(request, event: EventIn = Form(...), file: UploadedFile = None):
     new_event = Event(**event.dict())
-    new_event.host = CustomUser.objects.get(id=1)
-    # new_event.photo = file
+    new_event.host = CustomUser.objects.get(username="lumpator")
+    new_event.photo = file
     new_event.save()
     return JsonResponse({"id": new_event.id}, status=201)
 
