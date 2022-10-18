@@ -3,21 +3,13 @@
     <div class="container-fluid my-3">
 
 
-        {#        <div class="container-fluid">#}
-        {#            <a href="{{ request.META.HTTP_REFERER }}" class="btn  btn-outline-primary"><i#}
-        {#                    class="bi bi-arrow-left-circle"></i>#}
-        {#                <span class="d-none d-sm-inline">all events</span>#}
-        {#            </a>#}
-        {##}
-        {#        </div>#}
-
         <div class="row">
             <div class="col-lg-5">
                 <div class="card">
-                    <img src="{{ event.photo }}" class="card-img opacity-25" alt="...">
+                    <img src="{{ event.photo }}" class="card-img opacity-25" style="max-width: 50vh" alt="...">
                     <div class="card-img-overlay">
                         <h3 class="card-title my-2">{{ event.title }}</h3>
-                        <p class="card-text">{{ event.description }}</p>
+                        <p class="card-text">{{ event.description|truncatechars:50 }}</p>
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
@@ -73,12 +65,26 @@
                         <h3 class="card-title">Discussion</h3>
                         <div class="container-fluid">
 
-                            <form action="" method="POST">
+                            <form action="{{ event.id }}/create_message" method="POST">
                                 {% csrf_token %}
                                 <input class="form-control" name="body" id="body" type="text"
                                        placeholder="Write your message here....">
+                                <input type="hidden" name="event_id" value="{{ event.id }}">
                                 <input class="btn btn-primary my-2" type="submit" value="Send">
                             </form>
+                        </div>
+                        <div class="container-fluid">
+                            {% for message in messages %}
+
+                                {% if message.user == request.user %}
+                                    <p class="my-message">
+                                        {% else %}
+                                    <p class="other-message">
+                                {% endif %}
+                            <b>{{ message.user }}</b>: {{ message.body }} <br>
+                            <span class="msg-time"><i>{{ message.created|date:"d.m. H:i" }}</i></span>
+                            </p>
+                            {% endfor %}
                         </div>
                     </div>
                 </div>

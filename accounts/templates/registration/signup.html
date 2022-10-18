@@ -11,9 +11,7 @@
             {% csrf_token %}
             <p>
             <label for="organizer" class="form-label">Are you Event organizer?</label>
-
-
-            <input type="checkbox" class="form-control form-control-lg form-check-input border border-3" name="organizer">
+            <input type="checkbox" class="form-control form-control-lg form-check-input border border-3" name="organizer" value="true">
             </p>
             {{ form.as_p }}
 

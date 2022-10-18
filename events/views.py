@@ -1,16 +1,18 @@
 import json
 from datetime import datetime, timedelta
 
-
 from django.contrib.auth.decorators import login_required
+from django.core.files import File
+from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 
 from accounts.models import CustomUser
 from events.events_utils import check_and_save_session_filters, get_all_cities_from_events, \
     execute_filtered_query, get_filters_from_session
 from events.forms.forms import EventCreateForm
+from events.models import Message
 from events_api.models import Event
 
 
@@ -43,7 +45,8 @@ def event_detail(request, id):
     if request.method == "POST":
         return HttpResponse("success")
     event = Event.objects.get(pk=id)
-    return render(request, "event_detail.html", {"event": event})
+    messages = Message.objects.filter(event=event)
+    return render(request, "event_detail.html", {"event": event, "messages": messages})
 
 
 def add_event_to_favourites(request, id):
@@ -63,6 +66,7 @@ def remove_event_from_favourites(request, id):
         event.save()
         return HttpResponse("OK")
 
+
 def join_event(request, id):
     if request.method == "POST":
         user = CustomUser.objects.get(id=request.user.id)
@@ -70,6 +74,7 @@ def join_event(request, id):
         event.participants.add(user)
         event.save()
         return HttpResponse("OK")
+
 
 def leave_event(request, id):
     if request.method == "POST":
@@ -79,15 +84,36 @@ def leave_event(request, id):
         event.save()
         return HttpResponse("OK")
 
+
 @login_required
 def create_event(request):
+    form = EventCreateForm(request.POST)
     if request.method == "POST":
-        pass
-        # event = Event.objects.create(
-        #     host=request.user,
-        #     name=request.POST.get("name"),
-        #     description=request.POST.get("descr")
-        #     )
-        # return redirect("event", pk=event.id)
+        if form.is_valid():
+            form_photo = request.FILES["photo"]
+            file_storage = FileSystemStorage()
+            file = file_storage.save(form_photo.name, form_photo)
+            file_url = file_storage.url(file)
+            event = Event.objects.create(
+                host=request.user,
+                title=request.POST.get("title"),
+                description=request.POST.get("description"),
+                event_start=request.POST.get("event_start"),
+                event_end=request.POST.get("event_end"),
+                city=request.POST.get("city"),
+                photo=file_url
+
+            )
+            return redirect("event_detail", id=event.id)
 
     return render(request, "create_event.html", {"form": EventCreateForm})
+
+
+def create_message(request, id):
+    if request.method == "POST":
+        message = Message.objects.create(
+            user=request.user,
+            event=Event.objects.get(pk=request.POST.get("event_id")),
+            body=request.POST.get("body")
+        )
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))

@@ -4,7 +4,6 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
-
 class UserPermissions(models.Model):
     level = models.CharField(max_length=60)
 
@@ -13,5 +12,6 @@ class UserPermissions(models.Model):
 
 
 class CustomUser(AbstractUser):
-    permission = models.ForeignKey(UserPermissions, on_delete=models.SET_NULL, null=True)
+    permission = models.ForeignKey(UserPermissions, on_delete=models.SET_NULL, null=True,
+                                   default=1)
 
