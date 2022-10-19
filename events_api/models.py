@@ -28,3 +28,6 @@ class Event(models.Model):
 
     class Meta:
         ordering = ["event_start"]
+
+    def count_participants(self):
+        return self.participants.count()

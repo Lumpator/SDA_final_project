@@ -9,8 +9,10 @@
         </a>
 
         {# Search form #}
-        <form class="nav-item col" role="search">
-            <input class="form-control" type="search" placeholder="&#128269; Find event"
+        <form action="{% url "search" %}" method="post" class="nav-item col" role="search">
+            {% csrf_token %}
+            <input type="hidden" value="{% now "Y-m-d" %}" name="startdate">
+            <input class="form-control" type="search" name="event_search" placeholder="&#128269; Find upcoming event"
                    aria-label="Search">
         </form>
 

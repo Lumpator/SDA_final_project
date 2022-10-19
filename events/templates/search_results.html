@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block content %}
+    <div class="container-fluid">
+        <h1 class="display-2">Search results for:
+            <mark>{{ search_query }}</mark>
+            <br>
+            <small class="text-muted">Number of found events: {{ events.count }}</small>
+        </h1>
+        {# Include past events in results button#}
+        <form action="{% url "search" %}" method="post" class="nav-item col" role="search">
+            {% csrf_token %}
+            <input type="hidden" value="{% now "1900-1-1" %}" name="startdate">
+            <input type="hidden" name="event_search" value="{{ search_query }}">
+            <button type="submit" class="btn btn-secondary">Include Events from past</button>
+        </form>
+    </div>
+
+    {# Results listing #}
+    {% for event in events %}
+        <div class="d-flex justify-content-center">
+            <div class="card border-primary mx-2 my-2 col-sm-12 col-lg-10">
+                <div class="row g-2">
+                    <div class="col-lg-4">
+                        <img src="{{ event.photo }}" class="img-fluid rounded-start" alt="event photo">
+                    </div>
+                    <div class="col-lg-8">
+                        <div class="card-body">
+                            <p class="card-title"><i class="bi bi-calendar-event"></i>
+                                {{ event.event_start|date:'d.m.Y H:i' }}
+                                - {{ event.event_end|date:'d.m.Y H:i' }}</p>
+                            <p class="card-title"><i class="bi bi-geo-alt"></i>
+                                {{ event.city }}</p>
+                            <h5 class="card-title">
+                                <mark>{{ event.title }}</mark>
+                            </h5>
+                            <p class="card-text">{{ event.description|truncatechars:50 }} </p>
+                            <a href="{% url "event_detail" event.id %}" class="btn btn-lg btn-primary">Details</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endfor %}
+
+
+{% endblock %}

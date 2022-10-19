@@ -49,6 +49,7 @@ def event_detail(request, id):
     return render(request, "event_detail.html", {"event": event, "messages": messages})
 
 
+@login_required
 def add_event_to_favourites(request, id):
     if request.method == "POST":
         user = CustomUser.objects.get(id=request.user.id)
@@ -58,6 +59,7 @@ def add_event_to_favourites(request, id):
         return HttpResponse("OK")
 
 
+@login_required
 def remove_event_from_favourites(request, id):
     if request.method == "POST":
         user = CustomUser.objects.get(id=request.user.id)
@@ -67,6 +69,7 @@ def remove_event_from_favourites(request, id):
         return HttpResponse("OK")
 
 
+@login_required
 def join_event(request, id):
     if request.method == "POST":
         user = CustomUser.objects.get(id=request.user.id)
@@ -76,6 +79,7 @@ def join_event(request, id):
         return HttpResponse("OK")
 
 
+@login_required
 def leave_event(request, id):
     if request.method == "POST":
         user = CustomUser.objects.get(id=request.user.id)
@@ -109,6 +113,7 @@ def create_event(request):
     return render(request, "create_event.html", {"form": EventCreateForm})
 
 
+@login_required
 def create_message(request, id):
     if request.method == "POST":
         message = Message.objects.create(
@@ -117,3 +122,20 @@ def create_message(request, id):
             body=request.POST.get("body")
         )
         return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+
+
+def search(request):
+    if request.method == "POST":
+        if request.POST.get("event_search"):
+            search_query = request.POST.get("event_search").strip()
+            if len(search_query) > 0:
+                events = Event.objects.filter(title__icontains=search_query).filter(event_start__gt=request.POST.get("startdate"))
+                descr_results = Event.objects.filter(description__icontains=search_query)
+            else:
+                return redirect(request.META.get('HTTP_REFERER'))
+
+            return render(request, "search_results.html",
+                          {"events": events,
+                           "search_query": search_query})
+        return redirect(request.META.get('HTTP_REFERER'))
+    return redirect('/')

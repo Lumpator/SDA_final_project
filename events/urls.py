@@ -12,4 +12,5 @@ urlpatterns = [
     path("event/<str:id>/leave", events.views.leave_event, name="leave_event"),
     path("event/<str:id>/create_message", events.views.create_message, name="create_message"),
     path("create/", events.views.create_event, name="create_event"),
+    path("search/", events.views.search, name="search"),
 ]
