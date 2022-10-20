@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="container-fluid">
+        <div class="row">
+            <span class="col-6 col-lg-3 col-md-4">You are about to delete Event:</span> <span class="col "><mark><strong>{{ event.title }}</strong></mark></span>
+        </div>
+        <div class="row">
+            <span class="col-6  col-lg-3  col-md-4">With id:</span> <span class="col"><mark><strong>{{ event.id }}</strong></mark></span>
+            <h2 class="my-4">Are you sure?</h2>
+        </div>
+        <form method="post" class="d-inline-block" action="">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Yes</button>
+        </form>
+        <a href="{% url "home" %}" class="btn btn-primary">No, take me Home </a>
+    </div>
+{% endblock %}

@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+{% for event in events %}
+    <div class="d-flex justify-content-center">
+        <div class="card border-primary mx-2 my-2 col-sm-12 col-lg-10">
+            <div class="row g-2">
+                <div class="col-lg-4">
+                    <img src="{{ event.photo }}" class="img-fluid rounded-start" alt="event photo">
+                </div>
+                <div class="col-lg-8">
+                    <div class="card-body">
+                        <p class="card-title"><i class="bi bi-calendar-event"></i>
+                            {{ event.event_start|date:'d.m.Y H:i' }}
+                            - {{ event.event_end|date:'d.m.Y H:i' }}</p>
+                        <p class="card-title"><i class="bi bi-geo-alt"></i>
+                            {{ event.city }}</p>
+                        <h5 class="card-title">{{ event.title }}  </h5>
+                        <p class="card-text">{{ event.description|truncatechars:50 }} </p>
+                        <a href="{% url "event_detail" event.id %}" class="btn btn-lg btn-primary">Details</a>
+                        <a href="{% url "event_detail" event.id %}" class="btn btn-lg btn-outline-warning">Edit</a>
+                        <a href="{% url "delete_event" event.id %}" class="btn btn-lg btn-danger float-end">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endfor %}
+{% endblock %}

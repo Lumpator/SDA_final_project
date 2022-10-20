@@ -94,10 +94,13 @@ def create_event(request):
     form = EventCreateForm(request.POST)
     if request.method == "POST":
         if form.is_valid():
-            form_photo = request.FILES["photo"]
-            file_storage = FileSystemStorage()
-            file = file_storage.save(form_photo.name, form_photo)
-            file_url = file_storage.url(file)
+            if request.FILES.get("photo"):
+                form_photo = request.FILES["photo"]
+                file_storage = FileSystemStorage()
+                file = file_storage.save(form_photo.name, form_photo)
+                file_url = file_storage.url(file)
+            else:
+                file_url = "/events_api/media/event_photos/no-image-available-icon-6.png"
             event = Event.objects.create(
                 host=request.user,
                 title=request.POST.get("title"),
@@ -108,6 +111,7 @@ def create_event(request):
                 photo=file_url
 
             )
+            print("zakladam")
             return redirect("event_detail", id=event.id)
 
     return render(request, "create_event.html", {"form": EventCreateForm})
@@ -139,3 +143,15 @@ def search(request):
                            "search_query": search_query})
         return redirect(request.META.get('HTTP_REFERER'))
     return redirect('/')
+
+@login_required
+def my_events(request):
+    events = Event.objects.filter(host=request.user)
+    return render(request, "created_events.html", {"events": events})
+
+def delete_event(request, id):
+    if request.method == "POST":
+        Event.objects.get(pk=id).delete()
+        return redirect('/')
+    event = Event.objects.get(pk=id)
+    return render(request, "delete_event.html", {"event": event})

@@ -23,9 +23,9 @@
                 <i class="bi bi-person-circle"></i> {{ request.user.username }}
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">My profile</a></li>
+                <li><a class="dropdown-item" href="{% url "my_events" %}">My Events</a></li>
                 <li><a class="dropdown-item" href="{% url "create_event" %}">Create Event</a></li>
-                <li><a class="dropdown-item" href="#">Request api key?</a></li>
+{#                <li><a class="dropdown-item" href="#">Request api key?</a></li>#}
                 <li><a class="dropdown-item" href="{% url "logout" %}">Logout</a></li>
 
             </ul>
