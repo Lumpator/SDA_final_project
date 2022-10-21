@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="container-fluid my-3">
+
+            <div class="row">
+                <div class="col-lg-5">
+                    <div class="card">
+                        <img src="{{ event.photo }}" class="card-img" alt="Event photo">
+                        <form method="post" action="/event/{{event.id}}/update_photo" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input class="form-control" type="file" id="upload_new_photo" name="upload_new_photo" >
+                        <input type="submit" class="my-2 btn btn-success" value="Confirm new photo" id="upload_photo_submit" >
+                        </form>
+           <form action="" method="post">
+               {% csrf_token %}
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col text-start">ID</div>
+                                    <div class="col h5">{{ event.id }}</div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col text-start">Title</div>
+                                    <div class="col text-end h5">
+                                        <input class="form-control" type="text" name="title" value="{{ event.title }}"></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col text-start">Description</div>
+                                    <div class="col text-end h5">
+                                        <input class="form-control" type="text" name="description" value="{{ event.description }}"></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col text-start">City</div>
+                                    <div class="col text-end h5"><input class="form-control" type="text" name="city"
+                                                                        value="{{ event.city }}"></div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col text-start">Event start</div>
+                                    <div class="col text-end h5">
+                                        <input class="form-control" type="datetime-local" name="event_start"
+                                               value="{{ event.event_start|date:'Y-m-d' }}T{{ event.event_start|time:'H:i:s' }}">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col text-start">Event end</div>
+                                    <div class="col text-end h5">
+                                        <input class="form-control" type="datetime-local" name="event_end"
+                                               value="{{ event.event_end|date:'Y-m-d' }}T{{ event.event_end|time:'H:i:s' }}">
+                                    </div>
+                                </div>
+                            </li>
+
+
+                        </ul>
+
+                    </div>
+                    <button type="submit" class="btn btn-success my-3">Save Changes</button>
+                    <a href="{% url "event_detail" event.id %}" class="btn btn-danger mx-3">Discard Changes</a>
+
+
+                </div>
+
+
+            </div>
+           </form>
+    </div>
+
+{% endblock %}

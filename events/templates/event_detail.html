@@ -9,7 +9,7 @@
                     <img src="{{ event.photo }}" class="card-img opacity-25" style="max-width: 50vh" alt="...">
                     <div class="card-img-overlay">
                         <h3 class="card-title my-2">{{ event.title }}</h3>
-                        <p class="card-text">{{ event.description|truncatechars:50 }}</p>
+                        <p class="card-text"><strong>{{ event.description|truncatechars:200 }}</strong></p>
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item">
@@ -60,6 +60,12 @@
                                 class="btn btn btn-lg btn-outline-primary border-0 mx-3">
                             <i class="bi bi-heart"></i>
                         </button>
+                    {% endif %}
+                    {% if request.user == event.host %}
+                        <a href="{% url "delete_event" event.id %}"
+                           class="btn btn-lg btn-danger float-end mx-2">Delete</a>
+                        <a href="{% url "edit_event" event.id %}"
+                           class="btn btn-lg btn-outline-warning float-end">Edit</a>
                     {% endif %}
                     <div id="alert_placeholder"></div>
                 </div>

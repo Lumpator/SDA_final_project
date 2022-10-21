@@ -15,4 +15,8 @@ urlpatterns = [
     path("search/", events.views.search, name="search"),
     path("my-events", events.views.my_events, name="my_events"),
     path("event/<str:id>/delete", events.views.delete_event, name="delete_event"),
+    path("event/<str:id>/edit", events.views.edit_event, name="edit_event"),
+    path("event/<str:id>/update_photo", events.views.update_photo, name="update_photo"),
+
+
 ]

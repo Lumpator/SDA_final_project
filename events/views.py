@@ -1,12 +1,14 @@
 import json
 from datetime import datetime, timedelta
+from time import strptime
+from dateutil import parser
 
 from django.contrib.auth.decorators import login_required
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 
 from accounts.models import CustomUser
 from events.events_utils import check_and_save_session_filters, get_all_cities_from_events, \
@@ -149,9 +151,37 @@ def my_events(request):
     events = Event.objects.filter(host=request.user)
     return render(request, "created_events.html", {"events": events})
 
+@login_required
 def delete_event(request, id):
     if request.method == "POST":
         Event.objects.get(pk=id).delete()
         return redirect('/')
     event = Event.objects.get(pk=id)
     return render(request, "delete_event.html", {"event": event})
+
+@login_required
+def edit_event(request, id):
+    if request.method == "POST":
+        event = get_object_or_404(Event, pk=id)
+        event.title = request.POST.get("title")
+        event.description = request.POST.get("description")
+        event.city = request.POST.get("city")
+        event.event_start = parser.parse(request.POST.get("event_start"))
+        event.event_end = parser.parse(request.POST.get("event_end"))
+
+        event.save()
+        return render(request, "edit_event.html", {"event": event})
+    event = Event.objects.get(pk=id)
+    return render(request, "edit_event.html", {"event": event})
+
+@login_required
+def update_photo(request, id):
+    event = get_object_or_404(Event, pk=id)
+    if request.FILES:
+        photo = request.FILES["upload_new_photo"]
+        file_storage = FileSystemStorage()
+        file = file_storage.save(photo.name, photo)
+        file_url = file_storage.url(file)
+        event.photo = file_url
+        event.save()
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
