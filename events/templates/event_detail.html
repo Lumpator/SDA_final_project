@@ -189,8 +189,6 @@
                 headers: {"X-CSRFToken": csrftoken},
                 credentials: 'same-origin',
             })
-            const responseText = await response.text()
-            console.log(responseText)
             joinButton.classList = ("btn btn-danger")
             joinButton.innerHTML = "Leave Event";
             const alert = document.getElementById("alert_placeholder");
